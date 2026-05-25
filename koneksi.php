@@ -1,7 +1,12 @@
 <?php
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db   = "toko_nay";
 
-$koneksi = mysqli_connect("localhost", "root", "", "nay");
+$koneksi = mysqli_connect($host, $user, $pass, $db);
+
 if (!$koneksi) {
-	die("Koneksi ke Gudang Data Gagal: ". mysqli_connect_error());
+	die("Koneksi Gagal: " .mysqli_connect_error());
 }
 ?>

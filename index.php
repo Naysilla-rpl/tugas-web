@@ -1,98 +1,61 @@
-<?php include 'koneksi.php'; ?>
-<!DOCTYPE html>
+<?php
+include 'koneksi.php'; ?>
 <html>
 <head>
-	<title>Input Data</title>
-	<style>
-		body {
-			font-family: 'Segoe UI', sans-serif;
-			background-color: #f4f7f6;
-			display: flex;
-			justify-content: center;
-			padding-top: 50px;
-		}
-
-		.form-card {
-			background: white;
-			padding: 30px;
-			border-radius: 8px;
-			box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-			width: 350px;
-		}
-
-		h2 {
-			text-align: center;
-			color: #333;
-			margin-bottom: 20px;
-		}
-
-		label {
-			display: block;
-			margin-bottom: 5px;
-			color: #666;
-			font-size: 14px;
-		}
-
-		input[type="text"] {
-			width: 100%;
-			padding: 10px;
-			margin-bottom: 20px; border: 1px solid #ddd;
-			border-radius: 4px; 
-			box-sizing: border-box;
-		}
-
-		button {
-			width: 100%;
-			padding: 10px;
-			background-color: #4CAF50;
-			border: none;
-			color: white;
-			border-radius: 4px;
-			cursor: pointer;
-			font-size: 16px;
-		}
-
-		button:hover {
-			background-color: #45a049;
-		}
-
-		.back-link {
-			display: block;
-			text-align: center;
-			margin-top: 15px;
-			text-decoration: none;
-			color: #2196F3;
-			font-size: 14px;
-		}
-	</style>
+	<title>Inventaris Toko</title>
+	<link rel="stylesheet" type="text/css" href="style.css" class="btn-hapus">
 </head>
 <body>
-	<div class="form-card">
-		<h2>Form Siswa</h2>
-		<form method="POST" action="">
-			<label>Nama Lengkap</label>
-			<input type="text" name="v_nama" placeholder="Masukkan nama..." required>
+	<div class="container">
+		<h2>Input Barang Baru</h2>
+			<form method="POST" action="">
+				<input type="text" name="nama_barang" placeholder="Nama Barang" required><br>
+				<input type="number" name="stok" placeholder="Stok" required><br>
+				<input type="number" name="harga" placeholder="Harga" required><br>
+				<button type="submit" name="simpan">Simpan Data</button>
+			</form>
 
-			<label>Nomor HP</label>
-			<input type="text" name="v_no" placeholder="Masukkan nomor hp..." required>
+		<?php
+			if (isset($_POST['simpan'])) {
+			$nama  = $_POST['nama_barang'];
+			$stok  = $_POST['stok'];
+			$harga = $_POST['harga'];
+			mysqli_query($koneksi, "INSERT INTO barang (nama_barang, stok, harga) VALUES ('$nama', '$stok', '$harga')");
+			header("location:index.php");
+		}
+		?>
 
-			<label>Jurusan</label>
-			<input type="text" name="v_jurusan" placeholder="Masukkan jurusan..." required>
 
-			<button type="submit" name="b_simpan">Simpan Data</button>
-			<a href="tampil.php" class="back-link">Lihat Daftar Siswa</a>
-		</form>
+		<hr>
+		<h2>Daftar Barang</h2>
+		<table border="1" cellpadding="10" cellspacing="0">
+			<tr>
+				<th>No</th>
+				<th>Nama Barang</th>
+				<th>Stok</th>
+				<th>Harga</th>
+				<th>Aksi</th>
+			</tr>
+
+			<?php
+			$no = 1;
+			$data = mysqli_query($koneksi, "SELECT * FROM barang");
+			while ($d = mysqli_fetch_array($data)) {
+				?>
+				<tr>
+					<td><?php echo $no++; ?></td>
+					<td><?php echo $d['nama_barang']; ?></td>
+					<td><?php echo $d['stok']; ?></td>
+					<td><?php echo $d['harga']; ?></td>
+					<td>
+						<a href="edit.php?id=<?php echo $d['id']; ?>">EDIT</a>
+						<a href="hapus.php?id=<?php echo $d['id']; ?>" onclick="return confirm('Yakin hapus?')">HAPUS</a>
+					</td>
+				</tr>
+				<?php
+			}
+			?>
+		</table>
 	</div>
 </body>
 </html>
-
-<?php
-if (isset($_POST['b_simpan'])) {
-	$nama = $_POST['v_nama'];
-	$no = $_POST['v_no'];
-	$jurusan = $_POST['v_jurusan'];
-	$query = "INSERT INTO siswa (nama, no, jurusan) VALUES ('$nama', '$no', '$jurusan')";
-	mysqli_query($koneksi, $query);
-	echo "Data berhasil masuk!";
-}
-?>
